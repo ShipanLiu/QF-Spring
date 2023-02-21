@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+        https://www.springframework.org/schema/beans/spring-beans.xsd">
+
+    <!--  一个 Bean 标签： 就是 spring 管理的 一个类 -->
+<!--    id： 类的 唯一 标识（一般是 类名） 后续通过 该 id 从 容器中 获取对象（因为所有的 beans 都被放到了 spring 容器）-->
+<!--    class: 类的 路径-->
+    <bean id="myClass" class="com.qf.test.MyClass">
+<!--        bean 的中间 写 bean 的 配置-->
+    </bean>
+
+<!-- 这里放 class 对象， 不要放 interface， 因为 interace 不能 创建对象-->
+    <bean id="userDao" class="com.qf.dao.impl.UserDaoImpl"></bean>
+
+    <bean id="userService" class="com.qf.service.impl.UserServiceImpl">
+        <property name="myUserDao" ref="userDao"></property>
+    </bean>
+
+
+<!--    因为你 创建了一个 类， 你想把 这个 class 放到 string 容器里面， 所以现在要定义 一个 容器-->
+    <bean id="testModel" class="com.qf.test.TestModel">
+<!--        com.qf.test.TestModel 里面的值都需要 进行赋值-->
+        <!-- set方式赋值,使用property标签 -->
+        <!-- name是属性名,基本类型使用value赋值 -->
+        <!-- 引用类型赋值用ref -->
+        <property name="id" value="1"/>
+        <property name="money" value="9999.9"/>
+        <property name="age" value="18"/> <!-- 包装类也使用value赋值 -->
+        <property name="name" value="理想"/> <!-- String使用value赋值 -->
+        <property name="birthday" value="2000/01/01"/> <!-- 日期使用value,其模板yyyy/MM/dd -->
+
+        <property name="skill">
+            <array> <!-- 数组赋值使用array标签 -->
+                <value>Java</value>
+                <value>H5</value>
+                <value>Linux</value>
+            </array>
+        </property>
+
+        <property name="className">
+            <list><!-- list赋值使用 -->
+                <value>JavaEE2217</value>
+                <value>JavaEE2217</value>
+                <value>JavaEE2215</value>
+                <value>JavaEE2212</value>
+            </list>
+        </property>
+
+        <property name="phones">
+            <set> <!-- set集合赋值 , 110重复， 会自动被删除-->
+                <value>110</value>
+                <value>110</value>
+                <value>120</value>
+                <value>119</value>
+            </set>
+        </property>
+
+        <property name="np">
+            <map> <!-- map属性赋值 -->
+                <entry key="Henan" value="河南"/>
+                <entry key="Beijing" value="北京"/>
+                <entry key="Hangzhou" value="杭州"/>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="testModel2" class="com.qf.test.TestModel2">
+<!--        attention:   the property tag is only for DI of set, here you shoud use constructor-arg
+            because you use constructor DI-->
+        <!-- constructor-arg:代表构造器的一个参数 -->
+        <!-- index:参数的下标,type: 参数类型, name[use this most]  : 参数名 -->
+        <!-- 以上三个是确定给哪个参数辅助,不用同时使用 -->
+        <constructor-arg name="age" value="28"/>
+        <constructor-arg name="name" value="亚杰"/>
+    </bean>
+
+
+
+
+<!--     注意！！！！   第一次出现  autowire！！！-->
+    <!--  演示自动注入 -->
+
+    <!--
+       autowire 自动装配,两种方案
+          byType: 通过类型赋值
+             解释: spring容器创建HouseServiceImpl时,会解析到该对象需要HouseDao这些的属性
+                  spring容器中刚好有一个houseDao对象,类型刚好也是HouseDao,所以可以自动注入
+          byName: 通过名字注入
+             解释: 当需要注入属性时,byType是按类型注入,但是容器中如果同类型有多个,那就会不知道注入哪个而报错
+             此时就可以通过对象名来注入
+          Name是指 bean的id和属性名一直
+     -->
+
+
+
+
+<!--    create beans after creating classes in dao and service folder-->
+<!--    <bean id="houseDao" class="com.qf.dao.impl.HouseDaoImpl"></bean>-->
+    <bean id="houseDao2" class="com.qf.dao.impl.HouseDaoImpl2"/>
+
+    <bean id="houseService" class="com.qf.service.impl.HouseServiceImpl" autowire="byName">
+<!--        理论上 这里 应该写上 property 用ref  的-->
+<!--        <property name="houseDao" ref="houseDao"></property>-->
+    </bean>
+</beans>
